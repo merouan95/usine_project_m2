@@ -56,9 +56,11 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                 ArrayList<Map<String, String>> roles = (ArrayList<Map<String, String>>) claims.get("roles");
                 Collection<GrantedAuthority> authorities = new ArrayList<>();
                 roles.forEach(role -> {
-                    authorities.add((new SimpleGrantedAuthority(role.get("authority"))));
+                    authorities.add((new SimpleGrantedAuthority("ROLE_"+role.get("authority"))));
                 });
+                System.out.println("Authorities granted : " + authorities);
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
+                System.out.println("authenticationToken authenticationToken : " + authenticationToken);
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
 
