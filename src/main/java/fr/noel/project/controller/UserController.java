@@ -88,5 +88,13 @@ public class UserController {
         return this.userService.findOneById(id);
     }
 
-
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    public ResponseDto findAll(Authentication authentication) {
+        try {
+            final Long idByEmail = this.userService.findIdByEmail(authentication.getName());
+            return this.userService.allFormatedUsers(idByEmail);
+        } catch (Exception e) {
+            return new ResponseDto(false, e.getMessage());
+        }
+    }
 }

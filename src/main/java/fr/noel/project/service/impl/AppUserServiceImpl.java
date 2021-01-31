@@ -219,6 +219,16 @@ public class AppUserServiceImpl implements UserDetailsService {
         }
     }
 
+    public ResponseDto allFormatedUsers(Long adminId) {
+        try {
+            final List<AppUser> byCreatedBy = this.userRepository.findByCreatedBy(adminId);
+            final List<UserDto> content = byCreatedBy.stream().map(UserDto::toUserDto).collect(Collectors.toList());
+            return new ContentResponseDto(true, "OK", content);
+        } catch (Exception e) {
+            return new ResponseDto(false, e.getMessage());
+        }
+    }
+
     public Map<String, Long> stateUsers(Long adminId) {
         Map<String, Long> content = new HashMap<>();
         final List<AppUser> byCreatedBy = this.userRepository.findByCreatedBy(adminId);
