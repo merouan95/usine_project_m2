@@ -189,10 +189,7 @@ public class AppUserServiceImpl implements UserDetailsService {
                 }
             };
             final Tache maxDuree = taches.stream().reduce(taches.get(0), maxTacheAccumulator);
-            final int maxDureeMinute = maxDuree.getJeux().getDuree();
-            Duration duration = Duration.ofMinutes(maxDureeMinute);
-            final Instant dateFinTache = maxDuree.getDateAffectation().plus(duration);
-            if(dateFinTache.isBefore(Instant.now())){
+            if (maxDuree.getDateFin().isBefore(Instant.now())) {
                 return true;
             }
             else {
@@ -244,10 +241,9 @@ public class AppUserServiceImpl implements UserDetailsService {
         final Optional<AppUser> byId = this.userRepository.findById(id);
         if(byId.isPresent()){
             final AppUser appUser = byId.get();
-            return new ContentResponseDto(true,"OK",UserDto.toUserDto(appUser));
-        }
-        else{
-            return new ResponseDto(false,"NOT FOUND");
+            return new ContentResponseDto(true, "OK", UserDto.toUserDto(appUser));
+        } else {
+            return new ResponseDto(false, "NOT FOUND");
         }
     }
 }
