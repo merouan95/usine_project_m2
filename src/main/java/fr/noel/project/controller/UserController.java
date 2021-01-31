@@ -11,6 +11,7 @@ import fr.noel.project.service.impl.AppUserServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -35,7 +36,7 @@ public class UserController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseDto newUser(@RequestBody UserDto user, Authentication authentication) {
         log.info("REGISTER WEB SERVICE");
@@ -74,6 +75,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/availableUsers", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseDto availableUsers(Authentication authentication) {
         try {
             final Long idByEmail = this.userService.findIdByEmail(authentication.getName());
@@ -89,6 +91,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseDto findAll(Authentication authentication) {
         try {
             final Long idByEmail = this.userService.findIdByEmail(authentication.getName());

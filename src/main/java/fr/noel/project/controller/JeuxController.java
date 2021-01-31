@@ -6,6 +6,7 @@ import fr.noel.project.dto.ResponseDto;
 import fr.noel.project.service.JeuxService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,6 +25,7 @@ public class JeuxController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseDto addOrUpdateJeux(@RequestBody JeuxDto dto) {
         if (dto.getId() == null) {
             log.info("ADD NEW JEUX {} ", dto);
