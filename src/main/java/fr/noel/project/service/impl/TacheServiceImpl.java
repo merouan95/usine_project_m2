@@ -58,7 +58,7 @@ public class TacheServiceImpl implements TacheService {
     }
 
     @Override
-    public Tache addNewTacheEntity(TacheDto dto,Long idCommande) {
+    public Tache addNewTacheEntity(TacheDto dto, Long idCommande) {
         final AppUser appUser = this.userRepository.findById(dto.getLutin().getId()).get();
         final Jeux jeux = this.jeuxRepository.findById(dto.getJeux().getId()).get();
         final Instant now = Instant.now();
@@ -68,13 +68,13 @@ public class TacheServiceImpl implements TacheService {
         tache.setJeux(jeux);
         tache.setCommande(this.commandeRepository.findById(idCommande).get());
         final int duree = jeux.getDuree();
-        if(hasCompetances(appUser,jeux)){
+        final int nbrComptManq = hasCompetances2(appUser, jeux);
+        if (nbrComptManq == 0) {
             Duration duration = Duration.ofMinutes(duree);
             final Instant plus = now.plus(duration);
             tache.setDateFin(plus);
-        }
-        else{
-            Duration duration = Duration.ofMinutes(duree+Math.round(0.1*duree));
+        } else {
+            Duration duration = Duration.ofMinutes(duree + Math.round(0.1 * nbrComptManq * duree));
             final Instant plus = now.plus(duration);
             tache.setDateFin(plus);
         }
@@ -84,8 +84,32 @@ public class TacheServiceImpl implements TacheService {
     private boolean hasCompetances(AppUser appUser, Jeux jeux) {
         final List<Competence> gameCompetences = jeux.getCompetences();
         final List<Competence> userCompetences = appUser.getCompetences();
-        return  userCompetences.stream().allMatch(r->gameCompetences.contains(r));
+        if (userCompetences == null || userCompetences.size() == 0) {
+            return false;
+        }
+        if (userCompetences.size() > jeux.getCompetences().size()) {
+            return gameCompetences.stream().allMatch(r -> userCompetences.contains(r));
+        } else {
+            return userCompetences.stream().allMatch(r -> gameCompetences.contains(r));
+        }
     }
+
+    private int hasCompetances2(AppUser appUser, Jeux jeux) {
+        final List<Competence> gameCompetences = jeux.getCompetences();
+        final List<Competence> userCompetences = appUser.getCompetences();
+        int nbrCompManquant = 0;
+        if (userCompetences == null || userCompetences.size() == 0) {
+            return gameCompetences.size();
+        }
+        for (Competence g : gameCompetences) {
+            if (!userCompetences.contains(g)) {
+                nbrCompManquant++;
+            }
+        }
+        return nbrCompManquant;
+    }
+
+
 
     @Override
     public ResponseDto deleteTache(Long id) {
