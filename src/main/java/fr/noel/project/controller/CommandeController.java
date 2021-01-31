@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/app/commande")
-@PreAuthorize("hasRole('ADMIN')")
+// @PreAuthorize("hasRole('ADMIN')")
 @Slf4j
 public class CommandeController {
 
@@ -48,5 +48,11 @@ public class CommandeController {
     public ResponseDto findOne(@PathVariable Long id) {
         log.info("FIND ONE COMMANDE BY ID {} ", id);
         return this.commandeService.findOneById(id);
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseDto findByUser(@PathVariable Long id) {
+        log.info("FIND ONE COMMANDE BY USER ID {} ", id);
+        return this.commandeService.findAllByUser(id);
     }
 }

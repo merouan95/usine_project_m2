@@ -22,5 +22,7 @@ public interface CommandeService {
 
     ResponseDto findOneById(Long id);
 
+    ResponseDto findAllByUser(Long id);
+
 
 }

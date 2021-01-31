@@ -25,7 +25,7 @@ public class JeuxController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseDto addOrUpdateJeux(@RequestBody JeuxDto dto) {
         if (dto.getId() == null) {
             log.info("ADD NEW JEUX {} ", dto);

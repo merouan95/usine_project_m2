@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -157,6 +158,19 @@ public class CommandeServiceImpl implements CommandeService {
             return new ContentResponseDto(true, "OK", commandeDto);
         } else {
             return new ResponseDto(false, "NOT FOUND");
+        }
+
+    }
+
+    @Override
+    public ResponseDto findAllByUser(Long id) {
+        try {
+            final List<Tache> taches = this.tacheService.allTachesByUser(id);
+            Function<Tache, CommandeDto> mappeToDTO = tache -> CommandeDto.toCommandeDto(tache.getCommande());
+            final List<CommandeDto> content = taches.stream().map(mappeToDTO).collect(Collectors.toList());
+            return new ContentResponseDto(true,"OK",content);
+        } catch (Exception e) {
+            return new ResponseDto(false,e.getMessage());
         }
 
     }

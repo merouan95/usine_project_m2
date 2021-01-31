@@ -36,7 +36,7 @@ public class UserController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @PreAuthorize("hasRole('ADMIN')")
+   // @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseDto newUser(@RequestBody UserDto user, Authentication authentication) {
         log.info("REGISTER WEB SERVICE");
@@ -75,7 +75,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/availableUsers", method = RequestMethod.GET)
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseDto availableUsers(Authentication authentication) {
         try {
             final Long idByEmail = this.userService.findIdByEmail(authentication.getName());
@@ -91,7 +91,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
-    @PreAuthorize("hasRole('ADMIN')")
+   // @PreAuthorize("hasRole('ADMIN')")
     public ResponseDto findAll(Authentication authentication) {
         try {
             final Long idByEmail = this.userService.findIdByEmail(authentication.getName());
