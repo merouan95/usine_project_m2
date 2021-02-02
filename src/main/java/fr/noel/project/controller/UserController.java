@@ -100,4 +100,18 @@ public class UserController {
             return new ResponseDto(false, e.getMessage());
         }
     }
+
+    @PostMapping(value = "/user")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseDto updateUser(@RequestBody UserDto dto) {
+        return this.userService.updateUser(dto);
+    }
+
+    @PostMapping(value = "/user/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseDto deleteById(@PathVariable Long id) {
+        return this.userService.deleteUser(id);
+    }
+
+
 }

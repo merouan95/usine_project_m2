@@ -246,4 +246,43 @@ public class AppUserServiceImpl implements UserDetailsService {
             return new ResponseDto(false, "NOT FOUND");
         }
     }
+
+    public ResponseDto updateUser(UserDto userDto) {
+        final Optional<AppUser> byId = this.userRepository.findById(userDto.getId());
+        if (byId.isPresent()) {
+            AppUser appUser = byId.get();
+
+            if (userDto.getPassword() != null && !userDto.getPassword().equals("")) {
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                appUser.setPassword(encoder.encode(userDto.getPassword()));
+            }
+            if (userDto.getEmail() != null && !userDto.getEmail().equals("") && this.findByEmail(userDto.getEmail()) == null) {
+                appUser.setEmail(userDto.getEmail());
+            }
+            if (userDto.getName() != null && !userDto.getName().equals("")) {
+                appUser.setName(userDto.getName());
+            }
+            final List<CompetenceDto> userComp = userDto.getCompetences();
+            if (userComp != null && userComp.size() > 0) {
+                final List<Long> ids = userComp.stream().map(CompetenceDto::getId).collect(Collectors.toList());
+                final List<Competence> listEntityComp = this.competenceRepository.findByIdIn(ids);
+                appUser.setCompetences(listEntityComp);
+            }
+            appUser = this.userRepository.save(appUser);
+            return new ContentResponseDto(true, "OK", UserDto.toUserDto(appUser));
+        } else {
+            return new ResponseDto(false, "NOT FOUND");
+        }
+    }
+
+    public ResponseDto deleteUser(Long id) {
+        try {
+            this.userRepository.deleteById(id);
+            return new ResponseDto(true, "OK");
+        } catch (Exception e) {
+            return new ResponseDto(false, e.getMessage());
+        }
+    }
+
+
 }
