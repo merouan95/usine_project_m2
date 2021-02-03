@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/app/commande")
-@PreAuthorize("hasRole('ADMIN')")
 @Slf4j
 public class CommandeController {
 
@@ -27,6 +26,7 @@ public class CommandeController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseDto addOrUpdateCommande(@RequestBody CommandeDto dto) {
         if (dto.getId() == null) {
             log.info("ADD NEW COMMANDE {} ", dto);
@@ -38,6 +38,7 @@ public class CommandeController {
     }
 
     @PostMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseDto deleteCommande(@PathVariable Long id) {
         log.info("DELETE COMMANDE ID {} ", id);
         return this.commandeService.deleteCommande(id);
