@@ -139,13 +139,28 @@ public class TacheServiceImpl implements TacheService {
         final Optional<Tache> byId = this.tacheRepository.findById(dto.getId());
         if (byId.isPresent()) {
             Tache tache = byId.get();
+            AppUser appUser=null;
+            Jeux jeux=null;
             if (dto.getLutin() != null && dto.getLutin().getId() != null) {
-                final AppUser appUser = userRepository.findById(dto.getLutin().getId()).get();
+                appUser = userRepository.findById(dto.getLutin().getId()).get();
                 tache.setLutin(appUser);
             }
             if (dto.getJeux() != null && dto.getJeux().getId() != null) {
-                final Jeux jeux = jeuxRepository.findById(dto.getJeux().getId()).get();
+                jeux = jeuxRepository.findById(dto.getJeux().getId()).get();
                 tache.setJeux(jeux);
+            }
+            final int duree = jeux.getDuree();
+            final Instant now = Instant.now();
+            tache.setDateAffectation(now);
+            final int nbrComptManq = hasCompetances2(appUser, jeux);
+            if (nbrComptManq == 0) {
+                Duration duration = Duration.ofMinutes(duree);
+                final Instant plus = now.plus(duration);
+                tache.setDateFin(plus);
+            } else {
+                Duration duration = Duration.ofMinutes(duree + Math.round(0.1 * nbrComptManq * duree));
+                final Instant plus = now.plus(duration);
+                tache.setDateFin(plus);
             }
             tache = this.tacheRepository.save(tache);
             return new ContentResponseDto(true,"OK",TacheDto.toTacheDto(tache));

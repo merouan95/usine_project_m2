@@ -93,6 +93,14 @@ public class CommandeServiceImpl implements CommandeService {
             if (commandeDto.getDateCreation() != null) {
                 commande.setDateCreation(commandeDto.getDateCreation());
             }
+            final List<TacheDto> taches = commandeDto.getTaches();
+            if(taches!=null && taches.size()>0){
+                if (taches != null && taches.size() > 0) {
+                    for (TacheDto t : taches) {
+                        this.tacheService.updateTache(t);
+                    }
+                }
+            }
             commande = this.commandeRepository.save(commande);
             return new ContentResponseDto(true, "OK", CommandeDto.toCommandeDto(commande));
         } else {
