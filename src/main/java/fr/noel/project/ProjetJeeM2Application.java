@@ -8,17 +8,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Service;
 
 @SpringBootApplication
-public class ProjetJeeM2Application implements CommandLineRunner {
-	@Autowired
-	AppUserServiceImpl userService;
+public class ProjetJeeM2Application  {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ProjetJeeM2Application.class, args);
 	}
-	@Override
-	public void run(String... args) throws Exception {
-		userService.initApp();
-		userService.initCompetence();
-		userService.initCategorie();
-	}
+
 }
