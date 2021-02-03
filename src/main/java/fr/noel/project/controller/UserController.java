@@ -102,7 +102,6 @@ public class UserController {
     }
 
     @PostMapping(value = "/user")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseDto updateUser(@RequestBody UserDto dto) {
         return this.userService.updateUser(dto);
     }

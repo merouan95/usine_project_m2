@@ -24,6 +24,13 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
     @Autowired
     private AppUserServiceImpl userService;
 
+    private static final String[] SWAGGER_URLS = {
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/v2/api-docs",
+            "/webjars/**"
+    };
+
     @Bean
     @Override
     protected AuthenticationManager authenticationManager() throws Exception {
@@ -49,6 +56,7 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests().antMatchers("/app/login").permitAll();
+        http.authorizeRequests().antMatchers(SWAGGER_URLS).permitAll();
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(new AuthenticationFilter(authenticationManager()));
         http.addFilterBefore(new AuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
